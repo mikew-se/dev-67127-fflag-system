@@ -1,6 +1,5 @@
 package g532se
 
-import g532se.FeatureToggle.FeatureToggleSystemEnum
 import grails.gorm.transactions.ReadOnly
 
 class FeatureToggleService {
@@ -35,6 +34,17 @@ class FeatureToggleService {
                 inList('name', system.name())
             }
         }
+    }
+
+    @ReadOnly
+    def byConcatenatedString(FeatureToggleSystemEnum system) {
+        def active = []
+        FeatureToggle.findAllByActive(true).each { FeatureToggle config ->
+            if( config.systems.contains(system.name()) ) {
+                active << config
+            }
+        }
+        active
     }
 
     @ReadOnly
